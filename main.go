@@ -7,7 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -37,7 +36,13 @@ func main() {
 			return
 		}
 
-		spew.Dump(v)
+		d, err := json.MarshalIndent(v, "", "  ")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		fmt.Println(string(d))
 	})
 
 	if err := http.ListenAndServe(*addr, m); err != nil {
